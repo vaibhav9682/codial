@@ -1,5 +1,7 @@
 module.exports.home = function (req, res) {
-    return res.end('<h1>express server is up to run</h1>')
+    return res.render('home', {
+        title: "Home"
+    })
 }
 module.exports.content = function (req, res) {
     return res.end("<h1>home content</h1>")
