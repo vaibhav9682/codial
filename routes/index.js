@@ -7,6 +7,7 @@ router.get('/', homeController.home);
 // router.get('/homeContent', homeController.content)
 //different routers
 
+// router.use('/users', require('.'))
 router.use('/users', require('./users'))
 
 module.exports = router;

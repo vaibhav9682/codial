@@ -1,6 +1,22 @@
 const User = require('../model/user')
-module.exports.profile = function (req, res) {
-    return res.render('user_profile')
+module.exports.profile = async function (req, res) {
+
+    if (req.cookies.user_id) {
+
+        let user = await User.findById(req.cookies.user_id)
+        if (user) {
+            // console.log(user);
+            return res.render('user_profile', {
+                user: user
+            })
+
+        }
+        return res.redirect('/users/sign-in');
+
+    } else {
+        return res.redirect('/users/sign-in')
+    }
+
 }
 
 // render sign page
@@ -18,45 +34,59 @@ module.exports.signUp = function (req, res) {
 }
 
 
-// module.exports.create = function (req, res) {
-//     if (req.body.password != req.body.confirmPassword) { return res.redirect('back') }
 
-//     User.findOne({ email: req.body.email }, function (err, user) {
-//         if (err) { console.log('error in finding user in signing up'); return }
 
-//         if (!user) {
-//             User.create(req.body, function (err, user) {
-//                 if (err) { console.log('error in creating user'); return }
-//                 return res.redirect('/users/sign-in')
-//             })
-//         } else {
-//             return res.redirect('back')
-//         }
-
-//     })
-// }
 // get the sign up data
 
 module.exports.create = async function (req, res) {
     if (req.body.password != req.body.confirmPassword) {
-      return res.redirect("back");
+        return res.redirect("back");
     }
     let user = await User.findOne({ email: req.body.email })
     if (!user) {
         await User.create(req.body)
-       return res.redirect('/users/sign-in')
-    }else{
+        return res.redirect('/users/sign-in')
+    } else {
         return res.redirect('back')
     }
-    
-}
- 
-  
-  
-
-    
-
-
-module.exports.createSession = function (req, res) {
 
 }
+
+//  sign in pocess
+
+module.exports.createSession = async function (req, res) {
+    //  find the 
+
+
+
+
+    let user = await User.findOne({ email: req.body.email })
+
+    // user not found
+    if (!user) {
+        console.log('user not found');
+        return res.render('signUp')
+    }
+
+
+    // user has found
+    if (user) {
+
+        // password check
+        if (user.password != req.body.password) {
+            console.log('password is incorrect')
+            return res.redirect('back');
+        }
+
+        // session creation
+        await res.cookie('user_id', user.id);
+
+        return res.redirect('/users/profile');
+    } else {
+        return res.redirect('back');
+    }
+
+
+}
+
+
