@@ -90,3 +90,7 @@ module.exports.createSession = async function (req, res) {
 }
 
 
+module.exports.logout = function (req, res) {
+    res.clearCookie('user_id', {path:'/'})
+    return res.redirect('/users/sign-in')
+}

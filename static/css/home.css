@@ -1,0 +1,21 @@
+.btn{
+padding: 10px;
+display: flex;
+justify-content: space-between;
+width: 8vw;
+margin: auto;
+}
+.btn button{
+    padding: 5px;
+   border: none;
+}
+.btn a{
+    text-decoration: none;
+    color: white;
+}
+#signin{
+    background-color: rgb(74, 168, 156);
+}
+#signup{
+    background-color: rgb(207, 200, 102);
+}

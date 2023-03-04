@@ -1,3 +1,18 @@
 body{
-    background-color: green ;
+    background-color: rgb(70, 146, 70) ;
+}
+
+#logout{
+    position:absolute;
+    top: 30px ;
+    right: 50px;
+    padding: 5px;
+    border: none;
+    background-color: rgb(209, 184, 103);
+}
+#logout a{
+    color: white;
+    padding: 7px;
+    text-decoration: none;
+
 }
