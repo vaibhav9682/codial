@@ -11,11 +11,11 @@ passport.use(new LocalStrategy({
         try {
             let user = await User.findOne({ email: email })
             if (!user || user.password != password) {
-                        console.log('Invalid Username/password')
-                        return done(null, false);
-                    }
+                console.log('Invalid Username/password')
+                return done(null, false);
+            }
 
-                    return done(null, user);
+            return done(null, user);
         }
         catch (err) {
             console.log('error in finding user --> Passport');
@@ -48,9 +48,9 @@ passport.deserializeUser(async (id, done) => {
 
 
 // check if the user is authenticated 
-passport.checkAuthentication = function(req, res, next){
+passport.checkAuthentication = function (req, res, next) {
     // if the user is signed in, then pass on the request to the next function(controller's action)
-    if(req.isAuthenticated()){
+    if (req.isAuthenticated()) {
         return next();
     }
     // if the user is not signed in 
@@ -59,12 +59,12 @@ passport.checkAuthentication = function(req, res, next){
 
 
 
-passport.setAuthenticatedUser = function(res, req, next){
-    if(req.isAuthenticated()){
+passport.setAuthenticatedUser = function (req, res, next) {
+    if (req.isAuthenticated()) {
         // req.user contains the current signed in user from the session cookie and we are just sending this to the locals for the views
         res.locals.user = req.user
     }
-    next()
+    next();
 }
 
 
