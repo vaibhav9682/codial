@@ -1,4 +1,7 @@
-body{
-    background-color: rgb(75, 171, 196);
-    text-align: center;
+body {
+  background-color: rgb(224, 230, 231);
+  text-align: center;
+}
+body #main-layout {
+  height: 100%;
 }

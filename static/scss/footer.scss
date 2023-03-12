@@ -1,0 +1,15 @@
+footer{
+    display: flex;
+    background-image:linear-gradient(rgb(163, 162, 162), grey) ;
+     height: 7vh;
+     align-items: center;
+     div{
+        width: 7vw;
+        margin-left: 40px;
+        display: flex;
+        justify-content: space-between;
+        a{
+            text-decoration: none;
+        }
+     }
+}
