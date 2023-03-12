@@ -42,7 +42,7 @@ passport.deserializeUser(async (id, done) => {
         return done(null, user);
 
     } catch (err) {
-        console.log('Error in finding user --> passport : ', err); return;
+        console.log('Error in finding user --> passport : ', err); return done(err);
     }
 });
 
