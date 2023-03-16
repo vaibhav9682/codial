@@ -7,29 +7,39 @@
 <section id="feed-post">
     <h4>Post</h4>
     <%if(locals.user){%>
-    <form action="/post/create" id="new-post-form" method="POST">
-        <textarea name="content" placeholder="type here..." cols="30" rows="10"></textarea>
-        <input type="submit" value="Post">
-    </form>
-          <%}%>
-    <div id="post-list-container">
-        <ul>
+        <form action="/post/create" id="new-post-form" method="POST">
+            <textarea name="content" placeholder="type here..." cols="30" rows="10"></textarea>
+            <input type="submit" value="Post">
+        </form>
+        <%}%>
+            <div id="post-list-container">
+                <ul>
 
-            <%for(post of posts){%>
-                
-                <p>
-                    <li>
-                        <%= post.content%>
-                        
-                            <small>
-                                <%= post.user.name%>
-                            </small>
-                    </li>
-    
-                </p>
-               
-                <%}%>
+                    <%for(post of posts){%>
 
-        </ul>
-    </div>
+                        <li>
+                            <p>
+                                <%= post.content%>
+
+                                    <small>
+                                        <%= post.user.name%>
+                                    </small>
+                            </p>
+                            <!-- comments -->
+                            <div class="post-comments">
+                                <% if(locals.user){%>
+                                    <form action="/comments/create" method="POST">
+                                        <input type="text" name="content" placeholder="type here comments">
+                                        <input type="hidden" name="post" value="<%= post._id%>">
+                                        <input type="submit" value="Add comment">
+                                    </form>
+
+                                    <%}%>
+                            </div>
+                        </li>
+
+                        <%}%>
+
+                </ul>
+            </div>
 </section>
