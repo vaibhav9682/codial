@@ -16,10 +16,30 @@ module.exports.create = async function (req, res) {
                 return;
             }
             post.comments.push(comment);
-            post.save();    
+            post.save();
 
             res.redirect('/')
         }
         )
     }
+}
+
+
+module.exports.delComment = async function (req, res) {
+    let post = await Post.find({ comments: req.params.id });
+    // console.log("****", post.user)
+
+    let comment = await Comment.findById(req.params.id);
+    
+
+    if (comment.user == req.user.id || post[0].user == req.user.id) {
+        let postId = comment.post;
+        comment.remove();
+        let post = await Post.findByIdAndUpdate(postId, { $pull: { comments: req.params.id } })
+
+        return res.redirect('back');
+    }
+
+    return res.redirect('back');
+
 }
