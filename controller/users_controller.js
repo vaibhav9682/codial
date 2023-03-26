@@ -1,7 +1,20 @@
 const User = require('../model/user')
 
-module.exports.profile = function (req, res) {
-    return res.render('user_profile')
+module.exports.profile = async function (req, res) {
+    let user = await User.findById(req.params.id)
+    return res.render('user_profile', {
+        profile_user: user
+    })
+}
+
+module.exports.update = async function (req, res) {
+    if (req.user.id == req.params.id) {
+        await User.findByIdAndUpdate(req.params.id, req.body)
+        return res.redirect('back');
+
+    } else {
+        return res.status(401).send('Unauthorized')
+    }
 }
 
 // render sign page
