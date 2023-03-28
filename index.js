@@ -7,12 +7,16 @@ const db = require('./config/mongoose')
 // const sass = require('')
 
 
-
 // Used for session cookie
 const session = require('express-session')
 const passport = require('passport')
 const passportLocal = require('./config/passport-local-strategy')
 const MongoStore = require('connect-mongodb-session')(session);
+const flash = require('connect-flash')
+const customMware = require('./config/middleware');
+
+
+
 
 app.use(cookieParser());
 app.use(express.urlencoded())
@@ -56,8 +60,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.setAuthenticatedUser);
-
-
+app.use(flash());   
+app.use(customMware.setFlash);
 
 // use express router
 app.use('/', require('./routes'));

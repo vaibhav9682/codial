@@ -15,6 +15,7 @@ module.exports.create = async function (req, res) {
                 console.log('error in creating post in db');
                 return;
             }
+            req.flash('success', 'comment is added')
             post.comments.push(comment);
             post.save();
 
@@ -30,11 +31,12 @@ module.exports.delComment = async function (req, res) {
     // console.log("****", post.user)
 
     let comment = await Comment.findById(req.params.id);
-    
+
 
     if (comment.user == req.user.id || post[0].user == req.user.id) {
         let postId = comment.post;
         comment.remove();
+        req.flash('success', 'comment has been deleted')
         let post = await Post.findByIdAndUpdate(postId, { $pull: { comments: req.params.id } })
 
         return res.redirect('back');

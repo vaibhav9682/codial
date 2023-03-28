@@ -6,6 +6,15 @@ module.exports.profile = async function (req, res) {
         profile_user: user
     })
 }
+module.exports.myProfile = async function (req, res) {
+    let mUser = await User.findById(req.user.id)
+
+    return res.render('user_profile', {
+        profile_user: mUser
+
+    })
+}
+
 
 module.exports.update = async function (req, res) {
     if (req.user.id == req.params.id) {
@@ -64,17 +73,23 @@ module.exports.create = async function (req, res) {
 // sign in and create a session
 
 module.exports.createSession = function (req, res) {
-    return res.redirect('/');
 
+    req.flash('success', 'Logged in Successfully');
+    return res.redirect('/');
 }
 
 
 module.exports.destroySession = function (req, res) {
+
     req.logout(function (err) {
         if (err) {
             console.log(err)
         }
     });
+    req.flash('success', 'You have logged out');
+    // req.flash('success', 'You have logged out!');
+    
+
     return res.redirect('/');
 }
 
