@@ -1,6 +1,5 @@
 const Post = require('../model/post')
 const Comment = require('../model/comment')
-
 module.exports.createPost = async function (req, res) {
 
     if (req.isAuthenticated()) {
@@ -8,12 +7,13 @@ module.exports.createPost = async function (req, res) {
             content: req.body.content,
             user: req.user._id
         })
-
+        
         await post.populate('user', 'name');
         if (req.xhr) {
             return res.status(200).json({
                 data: {
                     post: post
+                
                 },
                 message: "post created!"
             })
@@ -28,10 +28,10 @@ module.exports.createPost = async function (req, res) {
 }
 
 module.exports.destroy = async function (req, res) {
-   
+
     let post = await Post.findById(req.params.id);
     //  .id means converting the object id into string
-   
+
     if (post.user == req.user.id) {
         post.remove();
         await Comment.deleteMany({ post: req.params.id })

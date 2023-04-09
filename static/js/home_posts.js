@@ -11,14 +11,15 @@
                 type: 'post',
                 url: '/post/create',
                 data: newPostForm.serialize(),
+
                 success: function (data) {
-                    // console.log(data.data.post)
+                    // console.log()
                     let newPost = newPostDom(data.data.post);
 
-                      console.log(newPost)
+                    // console.log(newPost)
                     $('#post-list-container>ul').prepend(newPost);
-                    deletePost($('.delete-post-button', newPost))
-
+                    deletePost($(' .delete-post-button', newPost))
+                    createComment(data.data.post._id)
                 }, error: function (error) {
                     console.log(error.responseText);
                 }
@@ -45,10 +46,10 @@
                     </small>
     </p>
     <!-- comments -->
-    <div class="post-comments">
+    <div class="post-comments" >
        
-            <form action="/comments/create" method="POST">
-                <input type="text" name="content" placeholder="type here comments" required>
+            <form action="/comments/create" method="POST" id="commentForm-${post._id}">
+                <input type="text" name="content" placeholder="type here comments" >
                 <input type="hidden" name="post" value="${post._id}">
                 <input type="submit" value="Add comment">
             </form>
@@ -56,7 +57,7 @@
            
 
                 <div class="post-comments-list">
-                    <ul id="post-comments-${post._id} ">
+                    <ul class="post-comments-${post._id} ">
                        
                     </ul>
                 </div>
@@ -79,16 +80,80 @@
 
                 success: function (data) {
 
-                    
+
                     $(`#post-${data.data.post_id}`).remove();
                 }, error: function (error) {
                     console.log(error.responseText);
                 }
-                
+
             })
 
         })
     }
+
+
+
+
+    let newCommentDom = function (data) {
+        return $(`<li id="comment-${data.comment.id}">
+    <p>
+       
+            <small>
+                <a class="commentLink" href="/comments/delete/${data.comment.id}">x</a>
+
+            </small>
+            
+
+                ${data.comment.content}
+                    <br>
+                    <small>
+                        ${data.userName.name}
+                    </small>
+    </p>
+</li>`)
+    }
+
+
+    // create comment in dom
+
+    let createComment = function (postId) {
+
+        let commentForm = $(`#commentForm-${postId}`)
+
+        commentForm.submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: 'post',
+                url: '/comments/create',
+                data: commentForm.serialize(),
+                success: function (data) {
+                    // console.log(data)
+                    console.log(data.data)
+                    let newComment = newCommentDom(data.data)
+                    let commentPost = $(`.post-comments-${data.data.comment.post}`).prepend(newComment)
+                    // commentPost.prepend(newComment)
+
+                }, error: function (error) {
+                    console.log(error.responseText)
+                }
+
+
+
+            })
+
+
+
+
+        })
+
+
+
+
+    }
+
+
+
 
 
 
@@ -114,4 +179,5 @@
 
 
     createPost();
+
 }

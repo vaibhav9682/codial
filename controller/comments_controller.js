@@ -1,28 +1,45 @@
 const Comment = require('../model/comment');
 const Post = require('../model/post');
+const User = require('../model/user')
 
 module.exports.create = async function (req, res) {
+    try {
+        let post = await Post.findById(req.body.post);
+        // console.log(req.body)
 
-    let post = await Post.findById(req.body.post);
-
-    if (post) {
-        Comment.create({
+        let comment = await Comment.create({
             content: req.body.content,
             post: req.body.post,
             user: req.user._id
-        }, function (err, comment) {
-            if (err) {
-                console.log('error in creating post in db');
-                return;
-            }
-            req.flash('success', 'comment is added')
-            post.comments.push(comment);
-            post.save();
-
-            res.redirect('/')
         }
         )
+
+
+        post.comments.push(comment);
+        post.save();
+        let userName = await User.findById(req.user._id)
+        if (req.xhr) {
+            return res.status(200).json({
+                data: {
+                    comment: comment,
+                    userName: userName
+                },
+                message: "comment created!"
+            })
+        }
+        req.flash('success', 'comment is added')
+
+        res.redirect('/')
+
+
+
+    } catch (error) {
+        console.log(error)
     }
+
+
+
+
 }
 
 
