@@ -13,12 +13,14 @@
                 data: newPostForm.serialize(),
 
                 success: function (data) {
-                    // console.log()
-                    let newPost = newPostDom(data.data.post);
 
-                    // console.log(newPost)
+                    let newPost = newPostDom(data.data.post);
+                    let flash = data.data.flash
                     $('#post-list-container>ul').prepend(newPost);
+                    
+
                     deletePost($(' .delete-post-button', newPost))
+
                     createComment(data.data.post._id)
                 }, error: function (error) {
                     console.log(error.responseText);
@@ -68,18 +70,14 @@
     //  delete post method 
 
     let deletePost = function (deleteLink) {
-        // console.log(deleteLink)  
+        // console.log("sss", deleteLink)
         $(deleteLink).click(function (e) {
             e.preventDefault();
-
-
-
             $.ajax({
                 type: 'get',
                 url: $(deleteLink).prop('href'),
 
                 success: function (data) {
-
 
                     $(`#post-${data.data.post_id}`).remove();
                 }, error: function (error) {
@@ -95,11 +93,12 @@
 
 
     let newCommentDom = function (data) {
-        return $(`<li id="comment-${data.comment.id}">
+        // console.log("xx", data)
+        return $(`<li id="comment-${data.comment._id}">
     <p>
        
             <small>
-                <a class="commentLink" href="/comments/delete/${data.comment.id}">x</a>
+                <a class="commentLink" href="/comments/delete/${data.comment._id}">x</a>
 
             </small>
             
@@ -128,28 +127,18 @@
                 url: '/comments/create',
                 data: commentForm.serialize(),
                 success: function (data) {
-                    // console.log(data)
-                    console.log(data.data)
+
                     let newComment = newCommentDom(data.data)
+                    // let commentd = data.data
                     let commentPost = $(`.post-comments-${data.data.comment.post}`).prepend(newComment)
-                    // commentPost.prepend(newComment)
+                    deleteComment($(' .commentLink', newComment))
+
 
                 }, error: function (error) {
                     console.log(error.responseText)
                 }
-
-
-
             })
-
-
-
-
         })
-
-
-
-
     }
 
 
@@ -157,24 +146,28 @@
 
 
 
-    // let deleteComment = function (delLink) {
-    //     $(delLink).click(function (e) {
-    //         e.preventDefault();
+    let deleteComment = function (delLink) {
+        // console.log(delLink)
+        $(delLink).click(function (e) {
+            e.preventDefault();
 
-    //         $.ajax({
-    //             type: 'get',
-    //             url: $(delLink).prop('href'),
-    //             success: function (data) {
-    //                 console.log(data);
-    //                 //    $(`#comment-$`)
-    //             }, error: function (error) {
-    //                 console.log(error.responseText)
-    //             }
-    //         })
+            $.ajax({
+                type: 'get',
+                url: $(delLink).prop('href'),
+                success: function (data) {
 
 
-    //     })
-    // }
+                    $(`#comment-${data.data.comment_id}`).remove();
+
+
+                    // console.log(data.data)
+
+                }, error: function (error) {
+                    console.log(error.responseText)
+                }
+            })
+        })
+    }
 
 
 
