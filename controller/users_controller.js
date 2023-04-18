@@ -1,4 +1,7 @@
 const User = require('../model/user')
+const fs = require('fs')
+const path = require('path')
+
 
 module.exports.profile = async function (req, res) {
     let user = await User.findById(req.params.id)
@@ -27,14 +30,24 @@ module.exports.update = async function (req, res) {
                 if (err) {
                     console.log('*******Multer Error:', err)
                 }
-
                 user.name = req.body.name;
                 user.email = req.body.email;
 
                 if (req.file) {
+
+                    if (user.avatar) {
+                        let link = path.join(__dirname, '..', user.avatar)
+                        fs.unlinkSync(link)
+
+                    }
+
+                    
+
                     // this is saving the path of the uploaded file into the avatar field in the user
+                    // console.log("---", User.avatarPath + '/' + req.file.filename)
                     user.avatar = User.avatarPath + '/' + req.file.filename
                 }
+
                 user.save();
                 return res.redirect('back');
             });
