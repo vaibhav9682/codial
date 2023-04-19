@@ -1,3 +1,29 @@
 body{
-    background-color: rgb(211, 212, 211) ;
+    background-image: linear-gradient(to bottom,  rgba(135, 206, 188, 0.616) 70%, rgba(245, 46, 20, 0.459));
+   
+    img{
+        width: 150px;
+         border-radius: 50%;
+         display: block;
+         margin: auto;
+         margin-top: 5%;
+    }
+     
+    form input{
+        width: 12%;
+        display: block;
+        margin: auto;
+        margin-top: 15px;
+        border: none;
+        background-color: rgba(255, 255, 255, 0.37);
+    }
+    
+    input:last-child{
+        width: 5%;
+        padding: 5px;
+        background-color: rgb(177, 17, 17);
+        color: white;
+    }
+    
+
 }
