@@ -1,6 +1,7 @@
 const Comment = require('../model/comment');
 const Post = require('../model/post');
 const User = require('../model/user')
+const commentsMailer = require('../mailers/comments_mailer')
 
 module.exports.create = async function (req, res) {
     try {
@@ -17,7 +18,12 @@ module.exports.create = async function (req, res) {
 
         post.comments.push(comment);
         post.save();
+
         let userName = await User.findById(req.user._id)
+
+        comment = await comment.populate('user', 'name email')
+        commentsMailer.newComment(comment);
+
         if (req.xhr) {
             return res.status(200).json({
                 data: {
@@ -48,7 +54,7 @@ module.exports.delComment = async function (req, res) {
     // console.log("****", post.user)
 
     let comment = await Comment.findById(req.params.id);
-//    console.log(comment)
+    //    console.log(comment)
 
     if (comment.user == req.user.id || post[0].user == req.user.id) {
         let postId = comment.post;
