@@ -15,13 +15,26 @@
                 success: function (data) {
 
                     let newPost = newPostDom(data.data.post);
-                    let flash = data.data.flash
+                    // let flash = data.data.flash
                     $('#post-list-container>ul').prepend(newPost);
-                    
+
 
                     deletePost($(' .delete-post-button', newPost))
 
-                    createComment(data.data.post._id)
+
+                    new PostComments(data.data.post._id)
+
+
+                    new ToggleLike(' .toggle-like-button', newPost)
+
+                    new Noty({
+                        theme: 'relax',
+                        type: 'success',
+                        text: 'post created! ',
+                        layout: 'topRight',
+                        timeout: 1500
+                    }).show();
+
                 }, error: function (error) {
                     console.log(error.responseText);
                 }
@@ -38,13 +51,22 @@
     <p>
        
             <small>
-                <a class="delete-post-button" href="/post/destroy/${post._id}">x</a>
+                <a class="delete-post-button" href="/post/destroy/${post._id}">
+                <i class="fa-sharp fa-solid fa-trash"></i>
+                </a>
             </small>
            
                 ${post.content}
 
                     <small>
                         ${post.user.name}
+                    </small>
+                   
+                    <small>
+                        <a class="toggle-like-button" data-likes="0"
+                            href="/likes/toggle/?id=${post._id}&type=Post">
+                            0 Likes
+                        </a>
                     </small>
     </p>
     <!-- comments -->
@@ -70,16 +92,24 @@
     //  delete post method 
 
     let deletePost = function (deleteLink) {
-        // console.log("sss", deleteLink)
+        
         $(deleteLink).click(function (e) {
             e.preventDefault();
             $.ajax({
                 type: 'get',
                 url: $(deleteLink).prop('href'),
+                success: async function (data) {
 
-                success: function (data) {
+                  await  $(`#post-${data.data.post_id}`).remove();
 
-                    $(`#post-${data.data.post_id}`).remove();
+                  new Noty({
+                    theme: 'relax',
+                    type: 'error',
+                    text: 'post deleted! ',
+                    layout: 'topRight',
+                    timeout: 1500
+                }).show();
+
                 }, error: function (error) {
                     console.log(error.responseText);
                 }
@@ -91,86 +121,19 @@
 
 
 
+    let convertPostsToAjax = function(){
+        $('#posts-list-container>ul>li').each(function(){
+            let self = $(this);
+            let deleteButton = $(' .delete-post-button', self);
+            deletePost(deleteButton);
 
-    let newCommentDom = function (data) {
-        // console.log("xx", data)
-        return $(`<li id="comment-${data.comment._id}">
-    <p>
-       
-            <small>
-                <a class="commentLink" href="/comments/delete/${data.comment._id}">x</a>
-
-            </small>
-            
-
-                ${data.comment.content}
-                    <br>
-                    <small>
-                        ${data.userName.name}
-                    </small>
-    </p>
-</li>`)
+            // get the post's id by splitting the id attribute
+            let postId = self.prop('id').split("-")[1]
+            new PostComments(postId);
+        });
     }
-
-
-    // create comment in dom
-
-    let createComment = function (postId) {
-
-        let commentForm = $(`#commentForm-${postId}`)
-
-        commentForm.submit(function (e) {
-            e.preventDefault();
-
-            $.ajax({
-                type: 'post',
-                url: '/comments/create',
-                data: commentForm.serialize(),
-                success: function (data) {
-
-                    let newComment = newCommentDom(data.data)
-                    // let commentd = data.data
-                    let commentPost = $(`.post-comments-${data.data.comment.post}`).prepend(newComment)
-                    deleteComment($(' .commentLink', newComment))
-
-
-                }, error: function (error) {
-                    console.log(error.responseText)
-                }
-            })
-        })
-    }
-
-
-
-
-
-
-    let deleteComment = function (delLink) {
-        // console.log(delLink)
-        $(delLink).click(function (e) {
-            e.preventDefault();
-
-            $.ajax({
-                type: 'get',
-                url: $(delLink).prop('href'),
-                success: function (data) {
-
-
-                    $(`#comment-${data.data.comment_id}`).remove();
-
-
-                    // console.log(data.data)
-
-                }, error: function (error) {
-                    console.log(error.responseText)
-                }
-            })
-        })
-    }
-
-
+   
 
     createPost();
-
+    convertPostsToAjax()
 }

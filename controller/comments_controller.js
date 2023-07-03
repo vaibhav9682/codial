@@ -2,6 +2,7 @@ const Comment = require('../model/comment');
 const Post = require('../model/post');
 const User = require('../model/user')
 const commentsMailer = require('../mailers/comments_mailer')
+const Like = require('../model/like');
 
 module.exports.create = async function (req, res) {
     try {
@@ -50,15 +51,22 @@ module.exports.create = async function (req, res) {
 
 
 module.exports.delComment = async function (req, res) {
-    let post = await Post.find({ comments: req.params.id });
     // console.log("****", post.user)
 
     let comment = await Comment.findById(req.params.id);
-    //    console.log(comment)
+    let Id = comment.post.toString()
 
-    if (comment.user == req.user.id || post[0].user == req.user.id) {
+    let userPost = await Post.findById(Id)
+    console.log("*********", userPost.user)
+
+    if (comment.user == req.user.id || req.user.id == userPost.user.toString()) {
         let postId = comment.post;
         comment.remove();
+
+        let post = await Post.findByIdAndUpdate(postId, { $pull: { comments: req.params.id } });
+
+
+        await Like.deleteMany({ likeable: comment._id, onModel: 'Comment' })
 
         if (req.xhr) {
 
@@ -74,7 +82,6 @@ module.exports.delComment = async function (req, res) {
 
         req.flash('success', 'comment has been deleted')
 
-        let post = await Post.findByIdAndUpdate(postId, { $pull: { comments: req.params.id } })
 
         return res.redirect('back');
     }
