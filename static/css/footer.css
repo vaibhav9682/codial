@@ -1,15 +1,12 @@
 footer {
   display: flex;
-  background-image: linear-gradient(rgb(163, 162, 162), grey);
+  background-image: linear-gradient(#a3a2a2, grey);
   height: 7vh;
-  align-items: center;
-}
-footer div {
-  width: 7vw;
-  margin-left: 40px;
-  display: flex;
-  justify-content: space-between;
-}
-footer div a {
-  text-decoration: none;
-}
+  align-items: center; }
+  footer div {
+    width: 7vw;
+    margin-left: 40px;
+    display: flex;
+    justify-content: space-between; }
+    footer div a {
+      text-decoration: none; }

@@ -1,17 +1,14 @@
 header {
   height: 5vh;
-  background-color: rgb(103, 20, 180);
+  background-color: #6714b4;
   display: flex;
   justify-content: space-between;
   color: white;
   margin-top: -7px;
   align-items: center;
-  padding: 5px;
-}
-header li {
-  list-style-type: none;
-}
-header li a {
-  text-decoration: none;
-  color: white;
-}
+  padding: 5px; }
+  header li {
+    list-style-type: none; }
+    header li a {
+      text-decoration: none;
+      color: white; }

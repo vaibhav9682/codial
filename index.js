@@ -1,10 +1,40 @@
-const cookieParser = require('cookie-parser');
 const express = require('express');
+const env = require('./config/env')
+const logger = require('morgan')
+const cookieParser = require('cookie-parser');
 const expressLayout = require('express-ejs-layouts');
 const port = 8000;
 const app = express();
 const db = require('./config/mongoose')
+const cors = require('cors')
+const sassMiddleware = require('node-sass-middleware')
+const path = require('path')
 
+
+
+app.use(cors());
+
+
+// setup chat server for socket.io
+const chatServer = require('http').Server(app);
+const chatSocket = require('./config/chat_socket').chatSockets(chatServer);
+
+
+
+chatServer.listen(5000)
+console.log('chat server is running on port 5000')
+
+// sass
+if (env.name == 'development') {
+    app.use(sassMiddleware({
+        src: path.join(__dirname, env.asset_path, '/scss'),
+        dest: path.join(__dirname, env.asset_path, '/css'),
+        debug: true,
+        outputStyle: 'extended',
+        prefix: '/css'
+    }))
+
+}
 
 
 // Used for session cookie
@@ -21,14 +51,20 @@ const customMware = require('./config/middleware');
 
 
 
-
-
 app.use(cookieParser());
 app.use(express.urlencoded())
 
 //make the uploads path available to the browser
 app.use('/uploads', express.static(__dirname + '/uploads'));
-app.use(express.static('static'));
+app.use(express.static(env.asset_path));
+
+app.use(logger(env.morgan.mode, env.morgan.options));
+
+app.use('*.css', (req, res, next) => {
+    res.set('Content-Type', 'text/css');
+    next();
+});
+
 app.use(expressLayout)
 
 app.set('layout extractStyles', true);
@@ -39,12 +75,11 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 
-
 // mongo store is used to store the session cookie in db
 app.use(session({
     name: 'codial',
     // todo change secret before deploying on server
-    secret: 'blahsomething',
+    secret: env.session_cookie_key,
     saveUninitialized: false,
     resave: false,
     cookie: {
