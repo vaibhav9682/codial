@@ -8,7 +8,7 @@ const accessLogStream = rfs.createStream('access.log', {
     interval: '1d',
     path: logDirectory
 })
-
+6b69415b28e29709ca275389a5e8b5efe9b6f342
 
 const development = {
     name: 'development',

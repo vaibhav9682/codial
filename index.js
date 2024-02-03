@@ -22,7 +22,7 @@ const chatSocket = require('./config/chat_socket').chatSockets(chatServer);
 
 
 chatServer.listen(5000)
-console.log('chat server is running on port 5000')
+console.log('chat server is running on port 5000')git 
 
 // sass
 if (env.name == 'development') {
